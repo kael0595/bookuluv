@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>BOOKU_LUV</title>
+    <!-- 제이쿼리 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+
+    <!-- toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://jhs512.github.io/toastr/toastr.css">
+
+    <!-- 폰트어썸 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- 테일윈드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        // 페이지 로딩 시 실행
+        window.onload = function() {
+            // 현재 페이지 URL을 가져오기
+            var currentUrl = window.location.href;
+            // 비밀번호 변경 페이지로의 접근 여부 확인
+            if (currentUrl.includes("/mypage/changePassword")) {
+                // 소셜 계정인 경우 알림창 출력
+                if ("<%= request.getAttribute('isSocialAccount') %>" === "true") {
+                    alert("소셜계정은 비밀번호를 변경하실 수 없습니다.");
+                    // 리다이렉트 또는 다른 동작 수행 가능
+                }
+            }
+        };
+    </script>
+</head>
+
+<body class="min-h-screen flex flex-col pt-[35px] md:pt-[50px]">
+
+<!-- 데이지 UI -->
+<link href="https://cdn.jsdelivr.net/npm/daisyui@3.1.1/dist/full.css" rel="stylesheet" type="text/css"/>
+
+<!-- common.css -->
+<link href="/resource/common/common.css" rel="stylesheet" type="text/css"/>
+
+<header class="fixed z-40 top-0 left-0 w-full bg-white border-b-[1px] border-b-[color:#efefef] h-[35px] md:h-[50px]">
+    <div class="container mx-auto h-full flex items-center px-2">
+        <div class="flex mr-auto">
+            <a href="/" class="logo flex font-bold">
+                <span class="text-[#1E9EFE]">BOOK</span>
+                <span class="ml-[2px] hidden lg:block">U_LUV</span>
+            </a>
+            <div class="xl:flex gap-3 ml-[50px] font-bold">
+                <a th:href="@{|/product/list?type=book|}" class="inline-flex hover:text-red-500 flex-shrink-0">
+                    <span class="ml-[2px] hidden lg:block ">
+                        국내도서
+                    </span>
+                </a>
+
+                <a th:href="@{|/product/list?type=foreign|}" class="inline-flex hover:text-red-500 flex-shrink-0">
+                    <span class="ml-[2px] hidden lg:block">
+                        외국도서
+                    </span>
+                </a>
+
+                <a href="#" class="inline-flex hover:text-red-500 flex-shrink-0">
+                    <span class="ml-[2px] hidden lg:block">
+                        Book U Luv Reader
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <div class="search-box items-center space-x-2 mr-4 md:mr-20 hidden xl:flex">
+            <form class="flex items-center" action="#" th:action="@{/api/search}" th:method="get"
+                  onsubmit="return validateSearchForm();">
+                <div class="relative flex items-center">
+                    <input type="text" name="query" class="border p-2 rounded-l pr-10" placeholder="Search for a book">
+                    <button type="submit" class="absolute right-3 top-0 h-full bg-transparent">
+                        <i class="fas fa-search text-black text-base"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="flex gap-3 hidden xl:flex items-center">
+            <a href="/member/profile" class="inline-flex items-center" sec:authorize="isAuthenticated()">
+                <img class="fa-solid fa-user w-12 h-12 rounded-full" alt=""
+                     th:if="${#authentication.principal.imgFilePath}"
+                     th:src="${#authentication.principal.imgFilePath}"/>
+                <img class="fa-solid fa-user w-12 h-12 rounded-full" alt=""
+                     src="https://mblogthumb-phinf.pstatic.net/MjAyMDExMDFfMyAg/MDAxNjA0MjI5NDA4NDMy.5zGHwAo_UtaQFX8Hd7zrDi1WiV5KrDsPHcRzu3e6b8Eg.IlkR3QN__c3o7Qe9z5_xYyCyr2vcx7L_W1arNFgwAJwg.JPEG.gambasg/%EC%9C%A0%ED%8A%9C%EB%B8%8C_%EA%B8%B0%EB%B3%B8%ED%94%84%EB%A1%9C%ED%95%84_%ED%8C%8C%EC%8A%A4%ED%85%94.jpg?type=w800"
+                     th:unless="${#authentication.principal.imgFilePath}"/>
+                <span class="ml-[2px]">
+                </span>
+                <span class="ml-[2px] hidden lg:block items-center" th:if="${#authentication.principal.nickName}"
+                      th:text="${#authentication.principal.nickName + ' 님'}">
+                </span>
+            </a>
+
+            <a href="/member/login" class="inline-flex flex-shrink-0" sec:authorize="isAnonymous()">
+                <span class="ml-[2px]">
+                    로그인
+                </span>
+            </a>
+
+            <a href="/member/join-type" class="inline-flex flex-shrink-0" sec:authorize="isAnonymous()">
+                <span class="ml-[2px]">
+                    회원가입
+                </span>
+            </a>
+
+            <a href="/notice/list" class="inline-flex flex-shrink-0">
+                <span class="ml-[2px]">
+                    공지사항
+                </span>
+            </a>
+
+            <a href="#" class="inline-flex flex-shrink-0">
+                <span class="ml-[2px]">
+                    장바구니
+                </span>
+            </a>
+            <a href="/admin/member" class="inline-flex items-center">
+                <span class="ml-[2px] hidden lg:block items-center">
+                    관리자페이지
+                  </span>
+            </a>
+
+            <a href="/member/logout" class="inline-flex flex-shrink-0" sec:authorize="isAuthenticated()">
+                <span class="ml-[2px]">
+                    로그아웃
+                </span>
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="flex-grow flex flex-col py-32">
+    <main layout:fragment="content" class="flex-grow flex flex-col"></main>
+</div>
+
+<footer class="bg-black py-16 text-top mt-32">
+    <div class="max-w-7xl mx-auto">
+        <nav class="flex flex-col md:flex-row md:justify-between">
+            <div class="flex md:flex-row gap-x-36 md:gap-x-0 justify-around">
+                <div>
+                    <img class="w-[100px]" src="https://i.imgur.com/9qCFLjc.png" alt="">
+                </div>
+
+                <div class="ml-[20px] text-white">
+
+                    <div class="mb-[10px]">
+                        <span>고우영</span>
+                    </div>
+                    <div class="mb-[10px]">
+
+                        <span>이메일 : wooyoung0407@naver.com</span>
+
+                    </div>
+                    <div class="mb-[10px]">
+                        <span>Front/React</span>
+                    </div>
+                    <div class="mb-[10px]">
+                        <span>고우영</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex md:flex-row gap-x-36 md:gap-x-0 justify-around mx-[10px]">
+                <div>
+                    <img class="w-[100px]" src="https://i.imgur.com/EgByDhq.jpg" alt="">
+                </div>
+                <div class="ml-[20px] text-white">
+
+                    <div class="mb-[10px]">
+                        <span>박창규</span>
+                    </div>
+                    <div class="mb-[10px]">
+
+                        <span>이메일 : wooyoung0407@naver.com</span>
+
+                    </div>
+                    <div class="mb-[10px]">
+                        <span>박창규</span>
+                    </div>
+                    <div class="mb-[10px]">
+                        <span>박창규</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex md:flex-row gap-x-36 md:gap-x-0 justify-around">
+                <div>
+                    <img class="w-[100px]" src="https://i.imgur.com/Q42WfBv.png" alt="">
+                </div>
+
+                <div class="ml-[20px] text-white">
+
+                    <div class="mb-[10px]">
+                        <span>황인성</span>
+                    </div>
+                    <div class="mb-[10px]">
+                        <span>이메일 : wooyoung0407@naver.com</span>
+                    </div>
+                    <div class="mb-[10px]">
+                        <span>황인성</span>
+                    </div>
+                    <div class="mb-[10px]">
+                        <span>황인성</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <br>
+        <hr class="w-95">
+        <div class="text-white font-bold text-3xl pt-5">Book U Luv</div>
+        <div class="text-white font-bold text-2xl pt-5">책 구매를 하여 책을 읽어 봅시다!</div>
+    </div>
+</footer>
+
+<script src="/resource/common/common.js"></script>
+<script th:inline="javascript">
+    /* 검색창이 제출될 때 검색어가 비어있는지 확인 */
+    function validateSearchForm() {
+        var queryInput = document.querySelector('input[name="query"]');
+        if (queryInput.value.trim() === "") {
+            alert("검색어를 입력해주세요.");
+            return false; // 검색어가 비어있으면 검색 요청을 보내지 않도록 반환
+        }
+        return true;
+    }
+
+
+</script>
+</body>
+</html>

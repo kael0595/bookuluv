@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/layout.html}" xmlns="http://www.w3.org/1999/html"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="" rel="stylesheet">
+    <title>main</title>
+</head>
+<body layout:fragment="content">
+<div class="container mx-auto py-4">
+    <!-- 신간도서 섹션 -->
+    <div class="my-10">
+        <div class="w-full mx-auto">
+            <span class="font-bold text-2xl sm:text-4xl">신간도서</span>
+        </div>
+        <!-- 도서 목록 -->
+        <div class="flex flex-wrap justify-center mt-8">
+            <!-- 각 도서 -->
+            <div class="w-full sm:w-1/2 md:w-1/4 lg:w-1/4 xl:w-1/5 p-4" th:each="newBook : ${newBooks}">
+                <div class="text-center">
+                    <a th:href="${newBook.link}">
+                        <img alt="Book Cover" class="mx-auto w-48 h-72" th:src="${newBook.coverImg}">
+                    </a>
+                    <a class="block text-lg font-semibold my-[30px]" th:href="${newBook.link}"
+                       th:text="${newBook.title}">Title</a>
+                    <span class="block text-gray-600 mb-[20px]" th:text="${newBook.author}"></span>
+                    <span class="block text-gray-600 mb-[20px]" th:text="${newBook.publisher}"></span>
+                    <div class="mt-2">
+                        <div>
+                            <span class="text-gray-500">정가 : </span>
+                            <span class="line-through text-gray-500" th:text="${newBook.priceStandard} + '원'"></span>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">할인가 : </span>
+                            <span class="text-green-600" th:text="${newBook.priceSales} + '원'"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="my-10">
+        <div class="w-full mx-auto">
+            <span class="font-bold text-2xl sm:text-4xl">베스트셀러</span>
+        </div>
+        <!-- 도서 목록 -->
+        <div class="flex flex-wrap justify-center mt-8">
+            <!-- 각 도서 -->
+            <div class="w-full sm:w-1/2 md:w-1/4 lg:w-1/4 xl:w-1/5 p-4" th:each="bestseller : ${bestsellers}">
+                <div class="text-center">
+                    <a th:href="${bestseller.link}">
+                        <img alt="Book Cover" class="mx-auto w-48 h-72" th:src="${bestseller.coverImg}">
+                    </a>
+                    <a class="block text-lg font-semibold my-[30px]" th:href="${bestseller.link}"
+                       th:text="${bestseller.title}">Title</a>
+                    <span class="block text-gray-600 mb-[20px]" th:text="${bestseller.author}"></span>
+                    <span class="block text-gray-600 mb-[20px]" th:text="${bestseller.publisher}"></span>
+                    <div class="mt-2">
+                        <div>
+                            <span class="text-gray-500">정가 : </span>
+                            <span class="line-through text-gray-500" th:text="${bestseller.priceStandard} + '원'"></span>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">할인가 : </span>
+                            <span class="text-green-600" th:text="${bestseller.priceSales}  + '원'"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+
+
+
