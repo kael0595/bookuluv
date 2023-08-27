@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Rebate Data</title>
+</head>
+<body>
+<h1>Rebate Data</h1>
+<table>
+    <tr>
+        <th>Product</th>
+        <th>판매가</th>
+        <th>결제 금액</th>
+        <th>결제 여부</th>
+        <th>결제일</th>
+    </tr>
+    <tr th:each="rebateItem : ${rebateItems}">
+        <td th:text="${rebateItem.product.title}"></td>
+        <td th:text="${rebateItem.price}"></td>
+        <td th:text="${rebateItem.payPrice}"></td>
+        <td th:text="${rebateItem.paid}"></td>
+        <td th:text="${rebateItem.payDate}"></td>
+    </tr>
+</table>
+</body>
+</html>
